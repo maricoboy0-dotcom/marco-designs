@@ -74,3 +74,66 @@ function scrollToTop() {
         behavior: "smooth"
     });
 }
+const contactForm = document.getElementById("contactForm");
+const formStatus = document.getElementById("formStatus");
+
+if (contactForm) {
+
+    contactForm.addEventListener("submit", async function(event) {
+
+        event.preventDefault();
+
+        const submitButton = contactForm.querySelector("button");
+
+        submitButton.disabled = true;
+        submitButton.innerHTML = "Sending...";
+
+        const formData = new FormData(contactForm);
+
+        try {
+
+            const response = await fetch(contactForm.action, {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "Accept": "application/json"
+                }
+            });
+
+            if (response.ok) {
+
+                formStatus.innerHTML =
+                    "✅ Message sent successfully! We will contact you soon.";
+
+                formStatus.style.color = "green";
+
+                contactForm.reset();
+
+                submitButton.disabled = false;
+                submitButton.innerHTML = "Send Message →";
+
+            } else {
+
+                formStatus.innerHTML =
+                    "❌ Something went wrong. Please try again.";
+
+                formStatus.style.color = "red";
+
+                submitButton.disabled = false;
+                submitButton.innerHTML = "Send Message →";
+            }
+
+        } catch (error) {
+
+            formStatus.innerHTML =
+                "❌ Unable to send message. Please try again.";
+
+            formStatus.style.color = "red";
+
+            submitButton.disabled = false;
+            submitButton.innerHTML = "Send Message →";
+        }
+
+    });
+
+}
